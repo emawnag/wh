@@ -8,6 +8,6 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd http://127.0.0.1:48489/wh/Textures/Whale_Quad_Diffuse.png
-map_Ns http://127.0.0.1:48489/wh/Textures/Whale_Quad_Roughness.png
-map_Bump -bm 1.000000 http://127.0.0.1:48489/wh/Textures/Whale_Quad_Normal.png
+map_Kd https://emawnag.github.io/wh/wh/Textures/Whale_Quad_Diffuse.png 
+map_Ns https://emawnag.github.io/wh/wh/Textures/Whale_Quad_Roughness.png
+map_Bump -bm 1.000000 https://emawnag.github.io/wh/wh/Textures/Whale_Quad_Normal.png
