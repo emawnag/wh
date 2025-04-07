@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Day 17 - Explosion</title>
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+  <body>
+    <div id="stats"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/109/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r16/Stats.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.3/dat.gui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.109.0/examples/js/loaders/OBJLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.109.0/examples/js/loaders/MTLLoader.js"></script>
+    <script type="module" src="./index.js"></script>
+    <script>
+    var hotfix=0;
+    let statusCheckURL = '127.0.0.1:20597/status'
+
+      function parseHashParams() {
+  const hash = window.location.hash.substring(1)
+  if (!hash) return {}
+  
+  try {
+    // Check if it's base64 encoded
+    const decoded = atob(hash)
+    return JSON.parse(decoded)
+  } catch (e) {
+    // If not base64, try regular parsing
+    const params = {}
+    hash.split('&').forEach(param => {
+      const [key, value] = param.split('=')
+      if (key && value) {
+        params[key.trim()] = value.trim()
+      }
+    })
+    return params
+  }
+}
+      document.addEventListener("DOMContentLoaded", () => {
+        if (typeof statusCheckURL !== "undefined") {
+          fetch(`http://${statusCheckURL}`)
+            .then(response => response.json())
+            .then(data => {
+              const { scale,displayNone } = data;
+              const canvas_ = document.querySelectorAll("canvas")[hotfix]; // Select the 4th canvas
+              if (canvas_) {
+                console.log("Canvas found:", canvas_);
+                canvas_.style.transform = `scale(${scale})`;
+                canvas_.style.display=displayNone?"none":"inline";
+              }
+
+              const interval = setInterval(() => {
+                fetch(`http://${statusCheckURL}`)
+                  .then(response => response.json())
+                  .then(data => {
+                    const { triggerMove, x1, y1, x2, y2, sec } = data;
+                    console.log("Data received:", triggerMove);
+                    if (triggerMove && canvas_) {
+                      console.log("Moving canvas...");
+                      clearInterval(interval);
+                      const startX = x1;
+                      const startY = y1;
+                      const endX = x2;
+                      const endY = y2;
+                      const duration = sec * 1000;
+
+                      const startTime = performance.now();
+                      const animate = (currentTime) => {
+                        const elapsed = currentTime - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        const currentX = startX + (endX - startX) * progress;
+                        const currentY = startY + (endY - startY) * progress;
+
+                        canvas_.style.transform = `scale(${scale}) translateX(${currentX}px) translateY(${currentY}px)`;
+
+                        if (progress < 1) {
+                          requestAnimationFrame(animate);
+                        }
+                      };
+                      requestAnimationFrame(animate);
+                    }
+                  });
+              }, 100);
+            });
+        }
+      });
+    </script>
+  </body>
+</html>
