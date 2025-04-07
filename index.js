@@ -10,7 +10,7 @@ const textureLoader = new THREE.TextureLoader()
 const smokeTexture = textureLoader.load('./smoke.png')
 // Add OBJLoader
 const objLoader = new THREE.OBJLoader()
-let rock // Variable to store the loaded rock model
+let whale // Variable to store the loaded whale model
 
 // URL hash parameters
 let urlParams = {}
@@ -51,10 +51,10 @@ function checkStatus() {
         hadBeenTriggered = true;
         controls.explosionTrigger();
       }
-      //if (rock) {
-        // Apply scale and translation to the rock
-        //rock.scale.set(data.scale, data.scale, data.scale);
-        //rock.position.set(data.translateX, data.translateY, rock.position.z);
+      //if (whale) {
+        // Apply scale and translation to the whale
+        //whale.scale.set(data.scale, data.scale, data.scale);
+        //whale.position.set(data.translateX, data.translateY, whale.position.z);
       //}
     })
     .catch(error => console.error('Status check error:', error))
@@ -64,45 +64,49 @@ function checkStatus() {
 // Add MTLLoader along with OBJLoader
 const mtlLoader = new THREE.MTLLoader()
 
-function loadRockModel() {
+function loadWhaleModel() {
   // Add a loading indicator
-  console.log('Loading rock model...')
+  console.log('Loading whale model...')
   
   // First load the material file
-  mtlLoader.setPath('./Rock1/')
+  mtlLoader.setPath('./wh/')
   mtlLoader.load(
-    'Rock1.mtl',
+    'Whale_Quad.mtl',
     function(materials) {
       materials.preload();
       
+      // Set texture path to the correct location
+      // materials.materials.Whale_Quad_Material.map.image.src = './wh/Textures/Whale_Quad_Diffuse.png';
+      // if (materials.materials.Whale_Quad_Material.roughnessMap) {
+      //   materials.materials.Whale_Quad_Material.roughnessMap.image.src = './wh/Textures/Whale_Quad_Roughness.png';
+      // }
+      // if (materials.materials.Whale_Quad_Material.normalMap) {
+      //   materials.materials.Whale_Quad_Material.normalMap.image.src = './wh/Textures/Whale_Quad_Normal.png';
+      // }
+      
       // After material is loaded, configure the object loader to use it
       objLoader.setMaterials(materials);
-      objLoader.setPath('./Rock1/');
+      objLoader.setPath('./wh/');
       
       // Now load the object with materials applied
       objLoader.load(
-        'Rock1.obj', 
+        'Whale_Quad.obj', 
         function(object) {
-          // Position the rock at 0,0,0
+          // Position the whale at 0, 0, 0
           object.position.set(0, 0, 0)
           
-          // Scale the rock to be more visible
-          object.scale.set(50, 50, 50)
+          // Scale the whale to be more visible
+          object.scale.set(20, 20, 20)
           
-          rock = object
-          scene.add(rock)
-          console.log('Rock model loaded successfully')
-      
-      // Add a helper box around the rock to visualize its boundaries
-      //const box = new THREE.Box3().setFromObject(rock);
-      //const helper = new THREE.Box3Helper(box, 0xffff00);
-      //scene.add(helper);
+          whale = object
+          scene.add(whale)
+          console.log('Whale model loaded successfully')
         },
         function(xhr) {
-          console.log('Rock model ' + (xhr.loaded / xhr.total * 100) + '% loaded')
+          console.log('Whale model ' + (xhr.loaded / xhr.total * 100) + '% loaded')
         },
         function(error) {
-          console.error('Error loading rock model:', error)
+          console.error('Error loading whale model:', error)
         }
       )
     },
@@ -127,11 +131,11 @@ let controls = new (function() {
     if (explosion) {
       explosion.destroy()
     }
-    explosion = new Explosion(this.rockX, this.rockY, this.rockZ)
+    explosion = new Explosion(this.whaleX, this.whaleY, this.whaleZ)
     
-    // Hide the rock when explosion is triggered
-    if (rock) {
-      rock.visible = false
+    // Hide the whale when explosion is triggered
+    if (whale) {
+      whale.visible = false
     }
   }
   this.pointSize = 20
@@ -143,18 +147,18 @@ let controls = new (function() {
   this.lightY = -1.3
   this.lightZ = 10
   
-  // Add rock position controls
-  this.rockX = 0
-  this.rockY = 0
-  this.rockZ = 0
+  // Add whale position controls
+  this.whaleX = 0
+  this.whaleY = 0
+  this.whaleZ = 0
   
-  // Reset rock position to center
-  this.resetRockPosition = function() {
-    this.rockX = 0
-    this.rockY = 0
-    this.rockZ = 0
-    if (rock) {
-      rock.position.set(this.rockX, this.rockY, this.rockZ)
+  // Reset whale position to center
+  this.resetWhalePosition = function() {
+    this.whaleX = 0
+    this.whaleY = 0
+    this.whaleZ = 0
+    if (whale) {
+      whale.position.set(this.whaleX, this.whaleY, this.whaleZ)
     }
   }
 })()
@@ -254,7 +258,7 @@ function init() {
   camera.position.set(0, 0, 1000)
   camera.lookAt(scene.position)
 
-  // Add lights so we can see the rock
+  // Add lights so we can see the whale
   const ambientLight = new THREE.AmbientLight(0xffffff, 1.0); 
   scene.add(ambientLight);
  
@@ -267,8 +271,8 @@ function init() {
   renderer.setClearColor(0x000000, 0)
   renderer.setSize(window.innerWidth, window.innerHeight)
 
-  // Load the rock model
-  loadRockModel();
+  // Load the whale model
+  loadWhaleModel();
 
   // Only initialize stats and GUI if not in clean mode
   if (!cleanMode) {
@@ -305,25 +309,25 @@ function init() {
     })
     lightFolder.open()
     
-    // Add rock position controls
-    const rockFolder = gui.addFolder('Rock Position')
-    rockFolder.add(controls, 'rockX', -100, 100).onChange(value => {
-      if (rock) {
-        rock.position.x = value
+    // Add whale position controls
+    const whaleFolder = gui.addFolder('Whale Position')
+    whaleFolder.add(controls, 'whaleX', -100, 100).onChange(value => {
+      if (whale) {
+        whale.position.x = value
       }
     })
-    rockFolder.add(controls, 'rockY', -100, 100).onChange(value => {
-      if (rock) {
-        rock.position.y = value
+    whaleFolder.add(controls, 'whaleY', -100, 100).onChange(value => {
+      if (whale) {
+        whale.position.y = value
       }
     })
-    rockFolder.add(controls, 'rockZ', -100, 100).onChange(value => {
-      if (rock) {
-        rock.position.z = value
+    whaleFolder.add(controls, 'whaleZ', -100, 100).onChange(value => {
+      if (whale) {
+        whale.position.z = value
       }
     })
-    rockFolder.add(controls, 'resetRockPosition')
-    rockFolder.open()
+    whaleFolder.add(controls, 'resetWhalePosition')
+    whaleFolder.open()
   } else {
     // Hide stats element in clean mode
     const statsEl = document.getElementById('stats')
