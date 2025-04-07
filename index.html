@@ -35,7 +35,9 @@
     })
     return params
   }
-}    parseHashParams();
+}  
+var urlParams = parseHashParams();
+console.log(urlParams);
 if (urlParams.listenURL) {
     statusCheckURL = urlParams.listenURL
   }
