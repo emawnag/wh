@@ -21,10 +21,12 @@ triggerMove = False
 scale = 1.0  # New global variable for scale
 sec = 0.0  # New global variable for sec
 displayNone = False  # New global variable for displayNone
+mirror = False  # New global variable for left-right mirror
+rotation = 0.0  # New global variable for rotation (in degrees)
 
 # return the response dictionary
 def onHTTPRequest(webServerDAT, request, response):
-    global var_trigger, x1, y1, x2, y2, triggerMove, scale, sec, displayNone
+    global var_trigger, x1, y1, x2, y2, triggerMove, scale, sec, displayNone, mirror, rotation
     
     # Set CORS headers
     response['Access-Control-Allow-Origin'] = '*'  # Allow all origins (change to specific domain if needed)
@@ -44,19 +46,19 @@ def onHTTPRequest(webServerDAT, request, response):
     # Route to set trigger to true
     if request['method'] == 'GET' and request['uri'] == '/trigger':
         var_trigger = True
-        response['data'] = '{"trigger": true, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s}' % (x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower())
+        response['data'] = '{"trigger": true, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s, "mirror": %s, "rotation": %f}' % (x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower(), str(mirror).lower(), rotation)
         response['content-type'] = 'application/json'
         return response
         
     elif request['method'] == 'GET' and request['uri'] == '/UNtrigger':
         var_trigger = False
-        response['data'] = '{"trigger": false, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s}' % (x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower())
+        response['data'] = '{"trigger": false, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s, "mirror": %s, "rotation": %f}' % (x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower(), str(mirror).lower(), rotation)
         response['content-type'] = 'application/json'
         return response
         
     # Route to get current trigger status
     elif request['method'] == 'GET' and request['uri'] == '/status':
-        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower())
+        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s, "mirror": %s, "rotation": %f}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower(), str(mirror).lower(), rotation)
         response['content-type'] = 'application/json'
         return response
     
@@ -71,21 +73,21 @@ def onHTTPRequest(webServerDAT, request, response):
         if 'y2' in request['pars']:
             y2 = int(request['pars']['y2'])
         
-        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower())
+        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s, "mirror": %s, "rotation": %f}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower(), str(mirror).lower(), rotation)
         response['content-type'] = 'application/json'
         return response
     
     # Route to toggle triggerMove
     elif request['method'] == 'GET' and request['uri'] == '/toggleTriggerMove':
         triggerMove = not triggerMove
-        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower())
+        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s, "mirror": %s, "rotation": %f}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower(), str(mirror).lower(), rotation)
         response['content-type'] = 'application/json'
         return response
     
     # Route to toggle displayNone
     elif request['method'] == 'GET' and request['uri'] == '/toggleDisplayNone':
         displayNone = not displayNone
-        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower())
+        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s, "mirror": %s, "rotation": %f}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower(), str(mirror).lower(), rotation)
         response['content-type'] = 'application/json'
         return response
     
@@ -94,7 +96,7 @@ def onHTTPRequest(webServerDAT, request, response):
         if 'scale' in request['pars']:
             scale = float(request['pars']['scale'])
         
-        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower())
+        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s, "mirror": %s, "rotation": %f}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower(), str(mirror).lower(), rotation)
         response['content-type'] = 'application/json'
         return response
     
@@ -103,7 +105,23 @@ def onHTTPRequest(webServerDAT, request, response):
         if 'sec' in request['pars']:
             sec = float(request['pars']['sec'])
         
-        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower())
+        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s, "mirror": %s, "rotation": %f}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower(), str(mirror).lower(), rotation)
+        response['content-type'] = 'application/json'
+        return response
+    
+    # Route to toggle mirror
+    elif request['method'] == 'GET' and request['uri'] == '/toggleMirror':
+        mirror = not mirror
+        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s, "mirror": %s, "rotation": %f}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower(), str(mirror).lower(), rotation)
+        response['content-type'] = 'application/json'
+        return response
+    
+    # Route to update rotation
+    elif request['method'] == 'GET' and request['uri'] == '/updateRotation':
+        if 'rotation' in request['pars']:
+            rotation = float(request['pars']['rotation'])
+        
+        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s, "mirror": %s, "rotation": %f}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower(), str(mirror).lower(), rotation)
         response['content-type'] = 'application/json'
         return response
     
@@ -168,6 +186,20 @@ def onHTTPRequest(webServerDAT, request, response):
                 <button onclick="updateSec()">Update Sec</button>
             </div>
             
+            <div class="control-section">
+                <h2>Mirror Control</h2>
+                <button onclick="toggleMirror()">Toggle Mirror</button>
+                <span>Current state: <span id="mirrorStatus">''' + str(mirror).lower() + '''</span></span>
+            </div>
+            
+            <div class="control-section">
+                <h2>Rotation Control</h2>
+                <div>
+                    <label>Rotation (degrees): <input type="number" id="rotationInput" value="''' + str(rotation) + '''" step="1"></label>
+                </div>
+                <button onclick="updateRotation()">Update Rotation</button>
+            </div>
+            
             <div class="status-section">
                 <h2>Current Status</h2>
                 <p>Trigger: <span id="triggerStatus">''' + str(var_trigger).lower() + '''</span></p>
@@ -179,6 +211,8 @@ def onHTTPRequest(webServerDAT, request, response):
                 <p>Display None: <span id="displayNoneStatus2">''' + str(displayNone).lower() + '''</span></p>
                 <p>Scale: <span id="scaleStatus">''' + str(scale) + '''</span></p>
                 <p>Sec: <span id="secStatus">''' + str(sec) + '''</span></p>
+                <p>Mirror: <span id="mirrorStatus2">''' + str(mirror).lower() + '''</span></p>
+                <p>Rotation: <span id="rotationStatus">''' + str(rotation) + '''</span> degrees</p>
             </div>
             
             <script>
@@ -225,6 +259,19 @@ def onHTTPRequest(webServerDAT, request, response):
                         .then(data => updateStatusDisplay(data));
                 }
                 
+                function toggleMirror() {
+                    fetch('/toggleMirror')
+                        .then(response => response.json())
+                        .then(data => updateStatusDisplay(data));
+                }
+                
+                function updateRotation() {
+                    const rotation = document.getElementById('rotationInput').value;
+                    fetch(`/updateRotation?rotation=${rotation}`)
+                        .then(response => response.json())
+                        .then(data => updateStatusDisplay(data));
+                }
+                
                 function updateStatusDisplay(data) {
                     document.getElementById('triggerStatus').innerText = data.trigger;
                     document.getElementById('x1Status').innerText = data.x1;
@@ -237,6 +284,8 @@ def onHTTPRequest(webServerDAT, request, response):
                     document.getElementById('displayNoneStatus2').innerText = data.displayNone;
                     document.getElementById('scaleStatus').innerText = data.scale;
                     document.getElementById('secStatus').innerText = data.sec;
+                    document.getElementById('mirrorStatus').innerText = data.mirror;
+                    document.getElementById('rotationStatus').innerText = data.rotation + ' degrees';
                     
                     // Update input values
                     //document.getElementById('x1Input').value = data.x1;
@@ -282,11 +331,13 @@ def onWebSocketReceivePong(webServerDAT, client, data):
     return
 
 def onServerStart(webServerDAT):
-    global var_trigger, scale, sec, displayNone
+    global var_trigger, scale, sec, displayNone, mirror, rotation
     var_trigger = False  # Initialize trigger to False on server start
     scale = 1.0  # Initialize scale on server start
     sec = 0.0  # Initialize sec on server start
     displayNone = False  # Initialize displayNone on server start
+    mirror = False  # Initialize mirror on server start
+    rotation = 0.0  # Initialize rotation on server start
     return
 
 def onServerStop(webServerDAT):

@@ -35,18 +35,27 @@
     })
     return params
   }
-}
+}    parseHashParams();
+if (urlParams.listenURL) {
+    statusCheckURL = urlParams.listenURL
+  }
       document.addEventListener("DOMContentLoaded", () => {
         if (typeof statusCheckURL !== "undefined") {
           fetch(`http://${statusCheckURL}`)
             .then(response => response.json())
             .then(data => {
-              const { scale,displayNone } = data;
+              const { scale,displayNone,mirror, rotation } = data;
               const canvas_ = document.querySelectorAll("canvas")[hotfix]; // Select the 4th canvas
               if (canvas_) {
                 console.log("Canvas found:", canvas_);
                 canvas_.style.transform = `scale(${scale})`;
                 canvas_.style.display=displayNone?"none":"inline";
+                if (mirror) {
+                  canvas_.style.transform += " scaleX(-1)";
+                }
+                if (rotation) {
+                  canvas_.style.transform += ` rotate(${rotation}deg)`;
+                }
               }
 
               const interval = setInterval(() => {
