@@ -156,6 +156,32 @@ def onHTTPRequest(webServerDAT, request, response):
                     <label>Y2: <input type="number" id="y2Input" value="''' + str(y2) + '''"></label>
                 </div>
                 <button onclick="updateCoordinates()">Update Coordinates</button>
+                
+                <div style="margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 15px;">
+                    <h3>Coordinate Presets</h3>
+                    <div style="display: flex; gap: 20px;">
+                        <div class="preset-group">
+                            <h4>Preset 1</h4>
+                            <div>
+                                <label>X1: <input type="number" id="preset1X1" value="100"></label>
+                                <label>Y1: <input type="number" id="preset1Y1" value="100"></label>
+                                <label>X2: <input type="number" id="preset1X2" value="500"></label>
+                                <label>Y2: <input type="number" id="preset1Y2" value="500"></label>
+                            </div>
+                            <button onclick="applyPreset(1)">Apply Preset 1</button>
+                        </div>
+                        <div class="preset-group">
+                            <h4>Preset 2</h4>
+                            <div>
+                                <label>X1: <input type="number" id="preset2X1" value="-100"></label>
+                                <label>Y1: <input type="number" id="preset2Y1" value="-100"></label>
+                                <label>X2: <input type="number" id="preset2X2" value="300"></label>
+                                <label>Y2: <input type="number" id="preset2Y2" value="300"></label>
+                            </div>
+                            <button onclick="applyPreset(2)">Apply Preset 2</button>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <div class="control-section">
@@ -303,6 +329,25 @@ def onHTTPRequest(webServerDAT, request, response):
                 }
                 
                 setInterval(updateStatus, 1000);
+                
+                function applyPreset(presetNumber) {
+                    let x1, y1, x2, y2;
+                    if (presetNumber === 1) {
+                        x1 = document.getElementById('preset1X1').value;
+                        y1 = document.getElementById('preset1Y1').value;
+                        x2 = document.getElementById('preset1X2').value;
+                        y2 = document.getElementById('preset1Y2').value;
+                    } else if (presetNumber === 2) {
+                        x1 = document.getElementById('preset2X1').value;
+                        y1 = document.getElementById('preset2Y1').value;
+                        x2 = document.getElementById('preset2X2').value;
+                        y2 = document.getElementById('preset2Y2').value;
+                    }
+                    
+                    fetch(`/updateCoords?x1=${x1}&y1=${y1}&x2=${x2}&y2=${y2}`)
+                        .then(response => response.json())
+                        .then(data => updateStatusDisplay(data));
+                }
             </script>
         </body>
         </html>
