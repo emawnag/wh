@@ -95,6 +95,9 @@ function loadWhaleModel() {
           // Position the whale at 0, 0, 0
           object.position.set(0, 0, 0)
           
+          // Rotate the whale 90 degrees around the z-axis (Math.PI/2 radians)
+          object.rotation.y = Math.PI / 2
+          
           // Scale the whale to be more visible
           object.scale.set(20, 20, 20)
           
